@@ -1,4 +1,0 @@
-SI
-==
-
-Spring Integration Projects

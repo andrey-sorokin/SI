@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-jdbc="http://www.springframework.org/schema/integration/jdbc"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jms="http://www.springframework.org/schema/integration/jms"
+	xmlns:file="http://www.springframework.org/schema/integration/file"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc         http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+                    http://www.springframework.org/schema/integration      http://www.springframework.org/schema/integration/spring-integration.xsd
+                    http://www.springframework.org/schema/task             http://www.springframework.org/schema/task/spring-task-3.0.xsd
+                    http://www.springframework.org/schema/beans            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                    http://www.springframework.org/schema/integration/jdbc http://www.springframework.org/schema/integration/jdbc/spring-integration-jdbc.xsd
+                    http://www.springframework.org/schema/integration/jms  http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+                    http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file-2.1.xsd">
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+		<property name="location">
+			<value>active.mq.properties</value>
+		</property>
+	</bean>
+
+	<int:poller id="poller" default="true" fixed-delay="1000" />
+
+	<!-- connection factory for ActiveMQ -->
+	<bean name="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL">
+			<value>tcp://${host}:61616</value>
+		</property>
+	</bean>
+
+	<!-- destination on ActiveMQ -->
+	<bean id="positionsQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="TEST.FOO" />
+	</bean>
+
+	<file:inbound-channel-adapter id="filesIn"
+		directory="c:\\temp\\storage" channel="inputChannel_">
+	</file:inbound-channel-adapter>
+
+	<file:file-to-bytes-transformer
+		input-channel="inputChannel_" output-channel="bytes" delete-files="true" />
+
+	<int:channel id="bytes" />
+
+	<jms:outbound-channel-adapter channel="bytes"
+		connection-factory="connectionFactory" destination="positionsQueue">
+	</jms:outbound-channel-adapter>
+
+
+</beans>
