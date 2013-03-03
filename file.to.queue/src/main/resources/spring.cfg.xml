@@ -32,7 +32,7 @@
 
 	<!-- destination on ActiveMQ -->
 	<bean id="positionsQueue" class="org.apache.activemq.command.ActiveMQQueue">
-		<constructor-arg value="TEST.FOO" />
+		<constructor-arg value="${target.queue}" />
 	</bean>
 
 	<file:inbound-channel-adapter id="filesIn"
