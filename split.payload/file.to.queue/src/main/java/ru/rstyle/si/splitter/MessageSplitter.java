@@ -7,23 +7,8 @@ import java.util.List;
 import org.springframework.integration.Message;
 import org.springframework.integration.message.GenericMessage;
 import org.springframework.integration.splitter.AbstractMessageSplitter;
-import org.springframework.integration.support.MessageBuilder;
 
 public class MessageSplitter extends AbstractMessageSplitter{
-    @Deprecated
-	public List<Message> splitMyMessageToTrades(Message<?> message) {
-
-		List<Message> chunks = new ArrayList<Message>();
-		byte[] payload = (byte[]) message.getPayload();
-
-		byte[][] chunk = divideArray(payload, 500);
-
-		for (byte[] c : chunk) {
-			chunks.add(new GenericMessage(c));
-		}
-
-		return chunks;
-	}
 
 	public static byte[][] divideArray(byte[] source, int chunksize) {
 
@@ -45,12 +30,12 @@ public class MessageSplitter extends AbstractMessageSplitter{
         List<Message> chunks = new ArrayList<Message>();
         byte[] payload = (byte[]) message.getPayload();
 
-        byte[][] chunk = divideArray(payload, 500);
+        byte[][] chunk = divideArray(payload, 1048576);
 
         for (byte[] c : chunk) {
             chunks.add(new GenericMessage(c));
         }
-
+        System.out.println(chunks.size());
         return chunks;
     }
 
