@@ -24,12 +24,8 @@
 			<value>tcp://localhost:61616</value>
 		</property>
 	</bean>
-
-	<jms:inbound-channel-adapter id="positionsJmsAdapter"
-		connection-factory="connectionFactory" destination="positionsQueue"
-		channel="inputChannel">
-		<int:poller fixed-rate="100" />
-	</jms:inbound-channel-adapter>
+ 
+	<jms:message-driven-channel-adapter id="positionsJmsAdapter" connection-factory="connectionFactory" destination="positionsQueue" channel="inputChannel"/>
 
 	<int:channel id="inputChannel" />
 
