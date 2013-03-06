@@ -36,7 +36,7 @@
     </bean>
 
     <file:inbound-channel-adapter id="filesIn"
-        directory="c:\\temp\\storage" channel="inputChannel">
+        directory="${folder.path}" channel="inputChannel">
     </file:inbound-channel-adapter>
 
     <file:file-to-bytes-transformer

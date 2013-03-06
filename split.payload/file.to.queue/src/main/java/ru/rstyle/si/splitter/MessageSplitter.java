@@ -8,7 +8,21 @@ import org.springframework.integration.Message;
 import org.springframework.integration.message.GenericMessage;
 import org.springframework.integration.splitter.AbstractMessageSplitter;
 
-public class MessageSplitter extends AbstractMessageSplitter{
+public class MessageSplitter extends AbstractMessageSplitter {
+
+	@Override
+	protected Object splitMessage(Message<?> message) {
+		List<Message> chunks = new ArrayList<Message>();
+		byte[] payload = (byte[]) message.getPayload();
+
+		byte[][] chunk = divideArray(payload, 1048576);
+
+		for (byte[] c : chunk) {
+			chunks.add(new GenericMessage(c));
+		}
+
+		return chunks;
+	}
 
 	public static byte[][] divideArray(byte[] source, int chunksize) {
 
@@ -24,19 +38,5 @@ public class MessageSplitter extends AbstractMessageSplitter{
 
 		return ret;
 	}
-
-    @Override
-    protected Object splitMessage(Message<?> message) {
-        List<Message> chunks = new ArrayList<Message>();
-        byte[] payload = (byte[]) message.getPayload();
-
-        byte[][] chunk = divideArray(payload, 1048576);
-
-        for (byte[] c : chunk) {
-            chunks.add(new GenericMessage(c));
-        }
-        System.out.println(chunks.size());
-        return chunks;
-    }
 
 }

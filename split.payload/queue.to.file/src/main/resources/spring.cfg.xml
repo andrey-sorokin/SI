@@ -13,33 +13,43 @@
                     http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
                     http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file-2.1.xsd">
 
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+		<property name="location">
+			<value>active.mq.properties</value>
+		</property>
+	</bean>
+
 	<!-- destination on ActiveMQ -->
 	<bean id="positionsQueue" class="org.apache.activemq.command.ActiveMQQueue">
-		<constructor-arg value="TEST.FOO" />
+		<constructor-arg value="${target.queue}" />
 	</bean>
 
 	<!-- connection factory for ActiveMQ -->
 	<bean name="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
 		<property name="brokerURL">
-			<value>tcp://localhost:61616</value>
+			<value>tcp://${host}:61616</value>
 		</property>
 	</bean>
- 
-	<jms:message-driven-channel-adapter id="positionsJmsAdapter" connection-factory="connectionFactory" destination="positionsQueue" channel="inputChannel"/>
+
+	<jms:message-driven-channel-adapter
+		id="positionsJmsAdapter" connection-factory="connectionFactory"
+		destination="positionsQueue" channel="inputChannel" />
 
 	<int:channel id="inputChannel" />
 
 	<int:aggregator input-channel="inputChannel"
 		output-channel="outputChannel" ref="messageAggregator" method="aggregateMessages">
 	</int:aggregator>
-	
+
 	<bean id="messageAggregator" class="ru.rstyle.si.aggregator.MessageAggregator" />
 
 	<int:channel id="outputChannel" />
 
-	<file:outbound-channel-adapter directory="c:\\temp\\storage2\"
+	<file:outbound-channel-adapter directory="${folder.path}"
 		channel="outputChannel">
-	
+
 	</file:outbound-channel-adapter>
 
 </beans>
