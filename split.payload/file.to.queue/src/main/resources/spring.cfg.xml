@@ -26,7 +26,7 @@
     <!-- connection factory for ActiveMQ -->
     <bean name="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL">
-            <value>tcp://${host}:61616</value>
+            <value>failover:tcp://${host}:61616</value>
         </property>
     </bean>
 
