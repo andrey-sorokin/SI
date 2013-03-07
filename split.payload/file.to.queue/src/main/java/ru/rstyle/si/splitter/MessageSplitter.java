@@ -10,33 +10,54 @@ import org.springframework.integration.splitter.AbstractMessageSplitter;
 
 public class MessageSplitter extends AbstractMessageSplitter {
 
-	@Override
-	protected Object splitMessage(Message<?> message) {
-		List<Message> chunks = new ArrayList<Message>();
-		byte[] payload = (byte[]) message.getPayload();
+    @Override
+    protected List<Message> splitMessage(Message<?> message) {
+        final int chunkSize = 1048576;
 
-		byte[][] chunk = divideArray(payload, 1048576);
+        List<Message> chunks = new ArrayList<Message>();
 
-		for (byte[] c : chunk) {
-			chunks.add(new GenericMessage(c));
-		}
+        byte[] payload = (byte[]) message.getPayload();
 
-		return chunks;
-	}
+        List outcome = splitArray(payload, chunkSize);
 
-	public static byte[][] divideArray(byte[] source, int chunksize) {
+        for (Object c : outcome) {
 
-		byte[][] ret = new byte[(int) Math.ceil(source.length
-				/ (double) chunksize)][chunksize];
+            byte[] test = (byte[]) c;
 
-		int start = 0;
+            chunks.add(new GenericMessage(test));
+        }
 
-		for (int i = 0; i < ret.length; i++) {
-			ret[i] = Arrays.copyOfRange(source, start, start + chunksize);
-			start += chunksize;
-		}
+        return outcome;
+    }
 
-		return ret;
-	}
+    public static List splitArray(byte[] array, int max) {
+
+        int x = array.length / max;
+
+        int lower = 0;
+        int upper = 0;
+
+        List list = new ArrayList();
+
+        for (int i = 0; i < x; i++) {
+
+            upper += max;
+
+            list.add(Arrays.copyOfRange(array, lower, upper));
+
+            lower = upper;
+        }
+
+        if (upper < array.length - 1) {
+
+            lower = upper;
+
+            upper = array.length;
+
+            list.add(Arrays.copyOfRange(array, lower, upper));
+        }
+
+        return list;
+    }
 
 }
