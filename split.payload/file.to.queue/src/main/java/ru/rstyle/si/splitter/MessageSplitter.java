@@ -10,54 +10,52 @@ import org.springframework.integration.splitter.AbstractMessageSplitter;
 
 public class MessageSplitter extends AbstractMessageSplitter {
 
-    @Override
-    protected List<Message> splitMessage(Message<?> message) {
-        final int chunkSize = 1048576;
+	@Override
+	protected List<Message> splitMessage(Message<?> message) {
+		final int chunkSize = 1048576;
+		List<Message> chunks;
 
-        List<Message> chunks = new ArrayList<Message>();
+		byte[] payload = (byte[]) message.getPayload();
 
-        byte[] payload = (byte[]) message.getPayload();
+		if (payload.length <= chunkSize) {
+			chunks = new ArrayList<Message>();
+			chunks.add(new GenericMessage(payload));
+			return chunks;
+		}
 
-        List outcome = splitArray(payload, chunkSize);
+		chunks = splitArray(payload, chunkSize);
 
-        for (Object c : outcome) {
+		return chunks;
+	}
 
-            byte[] test = (byte[]) c;
+	public static List splitArray(byte[] array, int max) {
 
-            chunks.add(new GenericMessage(test));
-        }
+		int x = array.length / max;
 
-        return outcome;
-    }
+		int lower = 0;
+		int upper = 0;
 
-    public static List splitArray(byte[] array, int max) {
+		List list = new ArrayList();
 
-        int x = array.length / max;
+		for (int i = 0; i < x; i++) {
 
-        int lower = 0;
-        int upper = 0;
+			upper += max;
 
-        List list = new ArrayList();
+			list.add(Arrays.copyOfRange(array, lower, upper));
 
-        for (int i = 0; i < x; i++) {
+			lower = upper;
+		}
 
-            upper += max;
+		if (upper < array.length - 1) {
 
-            list.add(Arrays.copyOfRange(array, lower, upper));
+			lower = upper;
 
-            lower = upper;
-        }
+			upper = array.length;
 
-        if (upper < array.length - 1) {
+			list.add(Arrays.copyOfRange(array, lower, upper));
+		}
 
-            lower = upper;
-
-            upper = array.length;
-
-            list.add(Arrays.copyOfRange(array, lower, upper));
-        }
-
-        return list;
-    }
+		return list;
+	}
 
 }
