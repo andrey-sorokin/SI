@@ -17,7 +17,7 @@
         class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 
         <property name="location">
-            <value>active.mq.properties</value>
+            <value>app.properties</value>
         </property>
     </bean>
 
@@ -26,17 +26,17 @@
     <!-- connection factory for ActiveMQ -->
     <bean name="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL">
-            <value>failover:tcp://${host}:61616</value>
+            <value>failover:tcp://${mqHost}:61616</value>
         </property>
     </bean>
 
     <!-- destination on ActiveMQ -->
     <bean id="positionsQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="${target.queue}" />
+        <constructor-arg value="${mqQueue}" />
     </bean>
 
     <file:inbound-channel-adapter id="filesIn"
-        directory="${folder.path}" channel="inputChannel">
+        directory="${inputFolder}" channel="inputChannel">
     </file:inbound-channel-adapter>
 
     <file:file-to-bytes-transformer
@@ -50,7 +50,9 @@
         output-channel="splitter-out-channel">
     </int:splitter>
 
-    <bean id="MessageSplitter" class="ru.rstyle.si.splitter.MessageSplitter" />
+    <bean id="MessageSplitter" class="ru.rstyle.si.splitter.MessageSplitter">
+         <constructor-arg value="${chunkSize}"/>
+    </bean>
 
     <int:channel id="splitter-out-channel" />
 

@@ -17,19 +17,19 @@
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 
 		<property name="location">
-			<value>active.mq.properties</value>
+			<value>app.properties</value>
 		</property>
 	</bean>
 
 	<!-- destination on ActiveMQ -->
 	<bean id="positionsQueue" class="org.apache.activemq.command.ActiveMQQueue">
-		<constructor-arg value="${target.queue}" />
+		<constructor-arg value="${mqQueue}" />
 	</bean>
 
 	<!-- connection factory for ActiveMQ -->
 	<bean name="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
 		<property name="brokerURL">
-			<value>tcp://${host}:61616</value>
+			<value>tcp://${mqHost}:61616</value>
 		</property>
 	</bean>
 
@@ -47,7 +47,7 @@
 
 	<int:channel id="outputChannel" />
 
-	<file:outbound-channel-adapter directory="${folder.path}"
+	<file:outbound-channel-adapter directory="${outputFolder}"
 		channel="outputChannel">
 
 	</file:outbound-channel-adapter>

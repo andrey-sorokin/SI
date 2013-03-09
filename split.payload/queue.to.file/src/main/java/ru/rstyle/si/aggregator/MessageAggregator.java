@@ -20,7 +20,6 @@ public class MessageAggregator {
 
 		} finally {
 			baos.close();
-
 		}
 
 	}

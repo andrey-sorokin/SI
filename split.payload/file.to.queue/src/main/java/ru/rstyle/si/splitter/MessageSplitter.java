@@ -5,21 +5,29 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.integration.Message;
-import org.springframework.integration.message.GenericMessage;
 import org.springframework.integration.splitter.AbstractMessageSplitter;
 
 public class MessageSplitter extends AbstractMessageSplitter {
 
+	private int chunkSize;
+
+	public MessageSplitter(int chunkSize){
+		this.chunkSize = chunkSize;
+	}
+	
 	@Override
-	protected List<Message> splitMessage(Message<?> message) {
-		final int chunkSize = 1048576;
-		List<Message> chunks;
+	protected List<byte[]> splitMessage(Message<?> message) {
+
+		final List<byte[]> chunks;
 
 		byte[] payload = (byte[]) message.getPayload();
 
 		if (payload.length <= chunkSize) {
-			chunks = new ArrayList<Message>();
-			chunks.add(new GenericMessage(payload));
+
+			chunks = new ArrayList<byte[]>();
+
+			chunks.add(payload);
+
 			return chunks;
 		}
 
@@ -28,14 +36,14 @@ public class MessageSplitter extends AbstractMessageSplitter {
 		return chunks;
 	}
 
-	public static List splitArray(byte[] array, int max) {
+	public static List<byte[]> splitArray(byte[] array, int max) {
 
 		int x = array.length / max;
 
 		int lower = 0;
 		int upper = 0;
 
-		List list = new ArrayList();
+		List<byte[]> list = new ArrayList<byte[]>();
 
 		for (int i = 0; i < x; i++) {
 
