@@ -6,4 +6,4 @@
  )
  set CLASSPATH=!CLASSPATH!"
 rem  echo !CLASSPATH!
-java -classpath !CLASSPATH! ru.rstyle.si.MyServiceDemo 
+java -Xms512m -Xmx1024m -classpath !CLASSPATH! ru.rstyle.si.MyServiceDemo 
