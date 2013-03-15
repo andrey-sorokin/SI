@@ -6,4 +6,4 @@
  )
  set CLASSPATH=!CLASSPATH!"
 rem  echo !CLASSPATH!
-java  -Duser.language=en -Duser.region=us -server -Xms512m -Xmx1024m -classpath !CLASSPATH! ru.rstyle.si.MyServiceDemo 
+java  -Duser.language=en -Duser.region=us -server -Xms512m -Xmx1024m -classpath !CLASSPATH! ru.rstyle.si.gateway.GatewayEndpointTest
