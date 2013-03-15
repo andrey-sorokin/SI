@@ -11,7 +11,7 @@ public class MyServiceDemo {
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		AbstractApplicationContext context = new ClassPathXmlApplicationContext(
-				"spring.cfg.postgres.xml");
+				"endpoints-gateway-beans.xml");
 		logger.info("The application is started");
 	}
 

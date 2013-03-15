@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-jdbc="http://www.springframework.org/schema/integration/jdbc"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jms="http://www.springframework.org/schema/integration/jms"
+	xmlns:file="http://www.springframework.org/schema/integration/file"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc         http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+                    http://www.springframework.org/schema/integration      http://www.springframework.org/schema/integration/spring-integration.xsd
+                    http://www.springframework.org/schema/task             http://www.springframework.org/schema/task/spring-task-3.0.xsd
+                    http://www.springframework.org/schema/beans            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                    http://www.springframework.org/schema/integration/jdbc http://www.springframework.org/schema/integration/jdbc/spring-integration-jdbc.xsd
+                    http://www.springframework.org/schema/integration/jms  http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+                    http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file-2.1.xsd">
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+		<property name="location">
+			<value>app.properties</value>
+		</property>
+	</bean>
+
+	<int:channel id="trades-in-channel">
+		<int:queue capacity="10" />
+	</int:channel>
+
+	<int:publish-subscribe-channel id="trades-out-channel" />
+
+	<int:gateway id="tradeGateway" default-request-channel="trades-in-channel"
+		default-reply-channel="trades-out-channel"
+		service-interface="ru.rstyle.si.gateway.ITradeGateway" />
+
+	<int:service-activator input-channel="trades-in-channel"
+		output-channel="trades-out-channel" ref="tradeProcessor" method="receiveTrade">
+		<int:poller fixed-rate="10000" />
+	</int:service-activator>
+
+	<bean id="tradeProcessor" class="ru.rstyle.si.gateway.TradeProcessor" />
+
+	<!-- Async Gateway -->
+	<int:gateway id="asyncTradeGateway"
+		default-request-channel="trades-in-channel" default-reply-channel="trades-out-channel"
+		service-interface="ru.rstyle.si.gateway.ITradeGatewayAsync" />
+
+</beans>
