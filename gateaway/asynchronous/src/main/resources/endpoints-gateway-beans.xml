@@ -22,8 +22,17 @@
 	</bean>
 
 	<int:publish-subscribe-channel id="trades-out-channel" />
+    <int:publish-subscribe-channel id="out-channel" />
+    <int:publish-subscribe-channel id="trades-in-channel" />
+    <int:channel id="bytes" />
+    <int:channel id="splitter-out-channel" />
 
-	<int:publish-subscribe-channel id="trades-in-channel" />
+     <int:service-activator input-channel="out-channel"
+		output-channel="trades-out-channel" ref="tradeProcessor" method="receiveTrade">
+		
+	</int:service-activator>
+
+	<bean id="tradeProcessor" class="ru.rstyle.si.service.TradeProcessor" />	
 
 	<!-- Async Gateway -->
 	<int:gateway id="asyncTradeGateway"
@@ -37,15 +46,11 @@
 
     <bean id="parcelEnricher" class="ru.rstyle.si.enricher.ParcelEnricher" />
 
-    <int:channel id="out-channel" />
-
 	<int:transformer input-channel="out-channel"
 		output-channel="bytes" ref="tradeMapTransformer">
 	</int:transformer>
 
 	<bean id="tradeMapTransformer" class="ru.rstyle.si.transformer.ParcelTransformer" />
-
-	<!-- the old functionality -->
 
 	<int:poller id="poller" default="true" fixed-delay="1000" />
 
@@ -60,10 +65,6 @@
 	<bean id="positionsQueue" class="org.apache.activemq.command.ActiveMQQueue">
 		<constructor-arg value="${mqQueue}" />
 	</bean>
-	<!-- <file:inbound-channel-adapter id="filesIn" directory="${inputFolder}" 
-		channel="inputChannel"> </file:inbound-channel-adapter> <file:file-to-bytes-transformer 
-		input-channel="inputChannel" output-channel="bytes" delete-files="true" /> -->
-	<int:channel id="bytes" />
 
 	<!-- Custom splitter -->
 	<int:splitter input-channel="bytes" ref="MessageSplitter"
@@ -73,8 +74,6 @@
 	<bean id="MessageSplitter" class="ru.rstyle.si.splitter.MessageSplitter">
 		<constructor-arg value="${chunkSize}" />
 	</bean>
-
-	<int:channel id="splitter-out-channel" />
 
 	<jms:outbound-channel-adapter channel="splitter-out-channel"
 		header-mapper="correlationIdJmsHeaderMapper" connection-factory="connectionFactory"

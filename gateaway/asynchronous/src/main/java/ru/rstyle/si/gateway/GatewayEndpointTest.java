@@ -4,6 +4,7 @@ import static java.lang.System.out;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.apache.commons.io.FileUtils;
@@ -28,7 +29,20 @@ public class GatewayEndpointTest {
 
 	public void publishTradeAsync(Parcel parcel) {
 
-		Future<byte []> f = asyncTradeGateway.processTrade(parcel);
+		Future<Parcel> f = asyncTradeGateway.processTrade(parcel);
+		
+		Parcel ft = null;
+		try {
+			ft = f.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("Trade Message published (Reply). "+ ft.getName());
+
+
 
 	}
 
