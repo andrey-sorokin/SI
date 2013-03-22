@@ -31,12 +31,19 @@ public class LogActivator {
 
 			for (int i = 1; i <= rowCount; i++) {
 				insert.update(
-						"INSERT INTO status_table (CORRELATION_ID, DOMAIN_ID, PARCEL_NAME) VALUES(?,?,?)",
-						new Object[] {correlationId.toString(), i, file_name });
-
+						"INSERT INTO status_table (CORRELATION_ID, DOMAIN_ID, PARCEL_NAME, SEND_TIME) VALUES(?,?,?,?)",
+						new Object[] {correlationId.toString(), i, file_name, getCurrentTimeStamp()});
 			}
 
 		}
 
 	}
+	
+	private synchronized static java.sql.Timestamp getCurrentTimeStamp() {
+		 
+		java.util.Date today = new java.util.Date();
+		return new java.sql.Timestamp(today.getTime());
+	 
+	}
+	
 }
