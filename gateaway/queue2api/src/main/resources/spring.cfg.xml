@@ -13,9 +13,9 @@
                     http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
                     http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file-2.1.xsd">
 
-    <int:channel id="inputChannel" />
-    <int:channel id="confirmationChannel" />
-    <int:publish-subscribe-channel id="outputChannel" />
+	<int:channel id="inputChannel" />
+	<int:channel id="confirmationChannel" />
+	<int:publish-subscribe-channel id="outputChannel" />
 
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -25,9 +25,8 @@
 		</property>
 	</bean>
 
-	<!-- destination on ActiveMQ -->
-	<bean id="positionsQueue" class="org.apache.activemq.command.ActiveMQQueue">
-		<constructor-arg value="${mqQueue}" />
+    <bean id="positionsTopic" class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg value="${mqTopic}" />
 	</bean>
 
 	<bean id="confirmQueue" class="org.apache.activemq.command.ActiveMQQueue">
@@ -43,7 +42,8 @@
 
 	<jms:message-driven-channel-adapter
 		id="positionsJmsAdapter" connection-factory="connectionFactory"
-		destination="positionsQueue" channel="inputChannel" />
+		destination="positionsTopic" channel="inputChannel"
+		subscription-durable="true" durable-subscription-name="${durable.subscription.name}" client-id="${client.id}" />
 
 	<int:aggregator input-channel="inputChannel"
 		output-channel="outputChannel" ref="messageAggregator" method="aggregateMessages">
@@ -56,10 +56,11 @@
 	</file:outbound-channel-adapter>
 
 	<int:service-activator input-channel="outputChannel"
-		output-channel="confirmationChannel" ref="confirmationProcessor" method="confirmParcel">
+		output-channel="confirmationChannel" ref="confirmationProcessor"
+		method="confirmParcel">
 	</int:service-activator>
 
-    <bean id="confirmationProcessor" class="ru.rstyle.si.processor.ConfirmationProcessor" />
+	<bean id="confirmationProcessor" class="ru.rstyle.si.processor.ConfirmationProcessor" />
 
 	<jms:outbound-channel-adapter channel="confirmationChannel"
 		connection-factory="connectionFactory" destination="confirmQueue">

@@ -67,9 +67,8 @@
 		</property>
 	</bean>
 
-	<!-- destination on ActiveMQ -->
-	<bean id="positionsQueue" class="org.apache.activemq.command.ActiveMQQueue">
-		<constructor-arg value="${mqQueue}" />
+    <bean id="positionsTopic" class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg value="${mqTopic}" />
 	</bean>
 
 	<!-- Custom splitter -->
@@ -91,7 +90,7 @@
 
 	<jms:outbound-channel-adapter channel="splitter-out-channel"
 		header-mapper="correlationIdJmsHeaderMapper" connection-factory="connectionFactory"
-		destination="positionsQueue">
+		destination="positionsTopic">
 	</jms:outbound-channel-adapter>
 
 	<bean id="correlationIdJmsHeaderMapper" class="ru.rstyle.si.splitter.CorrelationIdJmsHeaderMapper" />
