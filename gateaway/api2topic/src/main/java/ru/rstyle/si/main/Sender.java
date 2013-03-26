@@ -1,6 +1,5 @@
 package ru.rstyle.si.main;
 
-import static java.lang.System.out;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -15,6 +15,7 @@ import ru.rstyle.si.domain.Parcel;
 import ru.rstyle.si.gateway.ITradeGatewayAsync;
 
 public class Sender {
+	private static final Logger logger = Logger.getLogger(Sender.class);
 	private ApplicationContext ctx = null;
 
 	private ITradeGatewayAsync asyncTradeGateway = null;
@@ -25,7 +26,7 @@ public class Sender {
 		asyncTradeGateway = ctx.getBean("asyncTradeGateway",
 				ITradeGatewayAsync.class);
 
-		out.println("Async Gateway obtained: " + asyncTradeGateway);
+		logger.info("Async Gateway obtained: " + asyncTradeGateway);
 	}
 
 	public void publishTradeAsync(Parcel parcel) {
@@ -41,7 +42,7 @@ public class Sender {
 			e.printStackTrace();
 		}
 
-		out.println("Trade Message published (Reply). " + ft.getName());
+		logger.info("Trade Message published (Reply). " + ft.getName());
 	}
 
 	public static void main(String[] args) {

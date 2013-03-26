@@ -1,5 +1,7 @@
 package ru.rstyle.si.activator;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.UUID;
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -39,10 +41,8 @@ public class LogActivator {
 
 	}
 	
-	private synchronized static java.sql.Timestamp getCurrentTimeStamp() {
-		 
-		java.util.Date today = new java.util.Date();
-		return new java.sql.Timestamp(today.getTime());
+	private synchronized static Timestamp getCurrentTimeStamp() {
+		return new java.sql.Timestamp(new Date().getTime());
 	 
 	}
 	
