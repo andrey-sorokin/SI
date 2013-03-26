@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ru.rstyle.si</groupId>
-	<artifactId>queue2api</artifactId>
+	<artifactId>topic2api</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>queue2api</name>
+	<name>topic2api</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
 		<dependency>
@@ -73,7 +73,7 @@
 						</goals>
 
 						<configuration>
-							<finalName>queue2api</finalName>
+							<finalName>topic2api</finalName>
 							<appendAssemblyId>false</appendAssemblyId>
 							<descriptors>
 								<descriptor>src/main/assembly/config.xml</descriptor>

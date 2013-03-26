@@ -21,9 +21,9 @@
 		</property>
 	</bean>
 
-	<int:channel id="trades-out-channel" />
+	<int:channel id="parcel-out-channel" />
 	<int:publish-subscribe-channel id="out-channel" />
-	<int:channel id="trades-in-channel" />
+	<int:channel id="parcel-in-channel" />
 	<int:channel id="bytes" />
 	<int:publish-subscribe-channel id="splitter-out-channel" />
 
@@ -35,28 +35,28 @@
 	</bean>
 
 	<int:service-activator input-channel="out-channel"
-		output-channel="trades-out-channel" ref="tradeProcessor" method="receiveTrade">
+		output-channel="parcel-out-channel" ref="parcelProcessor" method="receiveParcel">
 	</int:service-activator>
 
-	<bean id="tradeProcessor" class="ru.rstyle.si.service.TradeProcessor" />
+	<bean id="parcelProcessor" class="ru.rstyle.si.service.ParcelProcessor" />
 
 	<!-- Async Gateway -->
 	<int:gateway id="asyncTradeGateway"
-		default-request-channel="trades-in-channel" default-reply-channel="trades-out-channel"
+		default-request-channel="parcel-in-channel" default-reply-channel="parcel-out-channel"
 		service-interface="ru.rstyle.si.gateway.ITradeGatewayAsync" />
 
 	<int:header-enricher id="pojo-enricher"
-		input-channel="trades-in-channel" output-channel="out-channel">
+		input-channel="parcel-in-channel" output-channel="out-channel">
 		<int:header name="file_name" ref="parcelEnricher" method="enrichHeader" />
 	</int:header-enricher>
 
 	<bean id="parcelEnricher" class="ru.rstyle.si.enricher.ParcelEnricher" />
 
 	<int:transformer input-channel="out-channel"
-		output-channel="bytes" ref="tradeMapTransformer">
+		output-channel="bytes" ref="parcelTransformer">
 	</int:transformer>
 
-	<bean id="tradeMapTransformer" class="ru.rstyle.si.transformer.ParcelTransformer" />
+	<bean id="parcelTransformer" class="ru.rstyle.si.transformer.ParcelTransformer" />
 
 	<int:poller id="poller" default="true" fixed-delay="1000" />
 
@@ -67,7 +67,7 @@
 		</property>
 	</bean>
 
-    <bean id="positionsTopic" class="org.apache.activemq.command.ActiveMQTopic">
+    <bean id="parcelTopic" class="org.apache.activemq.command.ActiveMQTopic">
 		<constructor-arg value="${mqTopic}" />
 	</bean>
 
@@ -90,7 +90,7 @@
 
 	<jms:outbound-channel-adapter channel="splitter-out-channel"
 		header-mapper="correlationIdJmsHeaderMapper" connection-factory="connectionFactory"
-		destination="positionsTopic">
+		destination="parcelTopic">
 	</jms:outbound-channel-adapter>
 
 	<bean id="correlationIdJmsHeaderMapper" class="ru.rstyle.si.splitter.CorrelationIdJmsHeaderMapper" />

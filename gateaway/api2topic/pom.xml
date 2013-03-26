@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ru.rstyle.si</groupId>
-	<artifactId>api2queue</artifactId>
+	<artifactId>api2topic</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>api2queue</name>
+	<name>api2topic</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<spring.integration.version>2.2.2.RELEASE</spring.integration.version>
@@ -148,7 +148,7 @@
 							<descriptors>
 								<descriptor>src/main/assembly/config.xml</descriptor>
 							</descriptors>
-							<finalName>api2queue</finalName>
+							<finalName>api2topic</finalName>
 						</configuration>
 						<goals>
 							<goal>single</goal>
