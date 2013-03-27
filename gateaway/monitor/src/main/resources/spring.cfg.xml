@@ -28,6 +28,8 @@
 		<property name="brokerURL">
 			<value>failover:tcp://${mqHost}:61616</value>
 		</property>
+		<property name="userName" value="${amq.username}" />
+		<property name="password" value="${amq.password}" />
 	</bean>
 
 	<!-- destination on ActiveMQ -->

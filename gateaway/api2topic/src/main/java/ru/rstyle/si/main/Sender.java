@@ -21,7 +21,7 @@ public class Sender {
 	private ITradeGatewayAsync asyncTradeGateway = null;
 
 	public Sender() {
-		ctx = new ClassPathXmlApplicationContext("endpoints-gateway-beans.xml");
+		ctx = new ClassPathXmlApplicationContext("spring.cfg.xml");
 
 		asyncTradeGateway = ctx.getBean("asyncTradeGateway",
 				ITradeGatewayAsync.class);
