@@ -1,8 +1,9 @@
 package ru.rstyle.si.main;
 
-
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -48,21 +49,35 @@ public class Sender {
 	public static void main(String[] args) {
 
 		Sender test = new Sender();
+		String xml = null;
 		
+/*		try {
+			xml = URLEncoder.encode("<?xml version=\"1.0\" encoding=\"UTF-8\"?><group/>","UTF-8");
+		} catch (UnsupportedEncodingException e) {
+
+			e.printStackTrace();
+		}
+		
+		String json = "{\"actions\":[{\"action\":\"com.rstyle.rsdoc.action.CreateObjectAction\", \"body\":[{\"records\":[{\"classmnemo\":\"DocumentGroupClassifier\", \"rows\": [{\"XML\":\" " + xml  + " \",\"ID_SEQUENCE\":\"54\",\"CODE\":\"13\",\"GROUP_NAME\": \"Внутренняя переписка \",\"DESCRIPTION\":\" Внутренняя переписка \"}]}]}]}]}";
+		byte[] input = json.getBytes();
+		Parcel parcel = new Parcel("null", input);
+		test.publishTradeAsync(parcel);
+        System.out.println(json);*/
 		try {
+			
 			String fileName = "C://tmp//input//тест.xml";
 			File file = new File(fileName);
 			byte[] input = FileUtils.readFileToByteArray(file);
 			Parcel parcel = new Parcel("тест.xml", input);
 			test.publishTradeAsync(parcel);
+            
 
-			/*
-			fileName = "C://tmp//input//7z917-x64.msi";
+			/*fileName = "C://tmp//input//7z917-x64.msi";
 			file = new File(fileName);
 			input = FileUtils.readFileToByteArray(file);
 			parcel = new Parcel("7z917-x64.msi", input);
-			test.publishTradeAsync(parcel);
-			*/
+			test.publishTradeAsync(parcel);*/
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
